@@ -683,17 +683,20 @@ mkvmeta_choice.type = radiobutton
 mkvmeta_choice.label = Embed metadata in Matroska?
 mkvmeta_choice.option = Yes
 mkvmeta_choice.option = No
+mkvmeta_choice.default = ${mkvmeta_choice}
 mkvmeta_choice.tooltip = Only applicable if creating Matroska files.
 mkvmeta_choice.x = 660
 mkvmeta_choice.y = 110
 mkvmeta_originator.type = textfield
 mkvmeta_originator.label = Originator
+mkvmeta_originator.default = ${mkvmeta_originator}
 mkvmeta_originator.width = 100
 mkvmeta_originator.x = 660
 mkvmeta_originator.y = 60
 mkvmeta_originator.tooltip = Enter identifier for organization responsible for archiving this item (for example name or MARC organization code).
 mkvmeta_codehist.type = textfield
 mkvmeta_codehist.label = Coding History
+mkvmeta_codehist.default = ${mkvmeta_codehist}
 mkvmeta_codehist.width = 100
 mkvmeta_codehist.x = 790
 mkvmeta_codehist.y = 60
@@ -827,7 +830,13 @@ duration_check
         echo  "framemd5_choice=\"${framemd5_choice}\"" >> "${config_file}"
         echo  >> "${config_file}"
         echo  "qctoolsxml_choice=\"${qctoolsxml_choice}\"" >> "${config_file}"
-                echo  >> "${config_file}"
+        echo  >> "${config_file}"
+        echo "mkvmeta_choice=\"${mkvmeta_choice}\"" >> "${config_file}"
+        echo  >> "${config_file}"
+        echo "mkvmeta_originator=\"${mkvmeta_originator}\"" >> "${config_file}"
+        echo  >> "${config_file}"
+        echo "mkvmeta_codehist=\"${mkvmeta_codehist}\"" >> "${config_file}"
+        echo  >> "${config_file}"
         echo  "${video_bit_depth_choice_comment}" >> "${config_file}"
         echo "video_bit_depth_choice=\"${video_bit_depth_choice}\"" >> "${config_file}"
         echo  >> "${config_file}"

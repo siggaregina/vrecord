@@ -984,9 +984,21 @@ if [ ! -d "${logdir}" ] ; then
     fi
 fi
 
+if [[ ${container_choice} = "Matroska" ]] ; then
+    if [[ ${mkvmeta_choice} = "Yes" ]] ; then
+        mkvmeta="yes"
+    fi
+fi
+
 if [[ "${framemd5_choice}" = "Yes" ]] ; then
     framemd5name="${logdir}/${id}${suffix}.framemd5"
     extraoutputs+=(-an -f framemd5 "${framemd5name}")
+        if [[ ${mkvmeta} = "yes" ]] ; then
+            extraoutputs+=(-an -f framemd5 "${framemd5name}" -an -f md5 /tmp/mkvmd5.md5)
+        fi
+    elif [[ ${mkvmeta} = "yes" ]] ; then
+        extraoutputs+=(-an -f md5 /tmp/mkvmd5.md5)
+
 else
     extraoutputs+=( )
 fi
@@ -1058,11 +1070,6 @@ report -d "Summary: ${video_bitdepth} bit ${codecname} ${container_choice} file 
 report -q "Hit enter to start recording"
 read
 
-if [[ ${container_choice} = "Matroska" ]] ; then
-    if [[ ${mkvmeta_choice} = "Yes" ]] ; then
-        mkvmeta="yes"
-    fi
-fi
 
 #create log of vrecord decisions
 INGESTLOG="${logdir}/${id}_capture_options.log"
@@ -1106,6 +1113,7 @@ bmdcapture -m ${standard} -V "${video_input}" -A "${audio_input}" -c 8 -s 32 -p 
                 -hide_banner -stats -autoexit \
                 -window_title "mode:${runtype} - video:'${video_input_choice}' audio:'${audio_input_choice}'" -vf "${playbackfilter}") | \
     ffmpeg -v info -hide_banner -stats ${inputoptions[@]} -i - ${middleoptions[@]} \
+
         -metadata:s:v:0 encoder="${codecname}" \
         -c:a pcm_s24le \
         -filter_complex "${recordingfilter};${audiomap}" \
@@ -1142,7 +1150,8 @@ fi
 _writeingestlog "datetime_end" "$(_get_iso8601)"
 
 #embed mkv metadata
-if [[ ${mkvmeta_choice} = "Yes" ]] ; then
+if [[ ${mkvmeta} = "yes" ]] ; then
+    md5=$(cat /tmp/mkvmd5.md5 | grep "MD5=" | cut -c 5-)
     create_mkvxml
     mkvpropedit --tags all:/tmp/vrecord_mkvmeta.xml  "${dir}/${id}${suffix}.${extension}"
 fi

@@ -1113,7 +1113,6 @@ bmdcapture -m ${standard} -V "${video_input}" -A "${audio_input}" -c 8 -s 32 -p 
                 -hide_banner -stats -autoexit \
                 -window_title "mode:${runtype} - video:'${video_input_choice}' audio:'${audio_input_choice}'" -vf "${playbackfilter}") | \
     ffmpeg -v info -hide_banner -stats ${inputoptions[@]} -i - ${middleoptions[@]} \
-
         -metadata:s:v:0 encoder="${codecname}" \
         -c:a pcm_s24le \
         -filter_complex "${recordingfilter};${audiomap}" \

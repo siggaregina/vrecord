@@ -642,7 +642,6 @@ technician.y = 55
 technician.type = textbox
 technician.height = 30
 technician.label = Enter the name of the person digitizing this tape.
-# Add a cancel button with default label
 #playbackview choice
 playbackview_choice.x = 20
 playbackview_choice.y = 3
@@ -652,6 +651,31 @@ playbackview_choice.default = ${playbackview_choice}
 playbackview_choice.option = ${undeclaredoption}
 playbackview_choice.option = Visual
 playbackview_choice.option = Visual + Numerical
+# Options for embedding metadata into MKV
+mkvmeta_text.type = text
+mkvmeta_text.default = The following choices are only for when optionally embedding metadata in Matroska files.
+mkvmeta_text.x = 660
+mkvmeta_text.y = 170
+mkvmeta_choice.type = radiobutton
+mkvmeta_choice.label = Embed metadata in Matroska?
+mkvmeta_choice.option = Yes
+mkvmeta_choice.option = No
+mkvmeta_choice.tooltip = Only applicable if creating Matroska files.
+mkvmeta_choice.x = 660
+mkvmeta_choice.y = 110
+mkvmeta_originator.type = textfield
+mkvmeta_originator.label = Originator
+mkvmeta_originator.width = 100
+mkvmeta_originator.x = 660
+mkvmeta_originator.y = 60
+mkvmeta_originator.tooltip = Enter identifier for organization responsible for archiving this item (for example name or MARC organization code).
+mkvmeta_codehist.type = textfield
+mkvmeta_codehist.label = Coding History
+mkvmeta_codehist.width = 100
+mkvmeta_codehist.x = 790
+mkvmeta_codehist.y = 60
+mkvmeta_codehist.tooltip = Enter information about the digitization process (for example machines used and original formats)
+# Add a cancel button with default label
 cb.type=cancelbutton
 ";
 

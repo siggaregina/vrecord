@@ -384,6 +384,29 @@ lookup_qctoolsxml(){
     esac
 }
 
+create_mkvxml(){
+echo "<Tags>" > /tmp/vrecord_mkvmeta.xml
+echo    "<Tag>" >> /tmp/vrecord_mkvmeta.xml
+echo "<Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<Name>Originator</Name>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<String>"$mkvmeta_originator"</String>" >> /tmp/vrecord_mkvmeta.xml
+echo "</Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo "<Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<Name>Original File Name</Name>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<String>"${id}${suffix}.${extension}"</String>" >> /tmp/vrecord_mkvmeta.xml
+echo "</Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo "<Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<Name>Coding History</Name>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<String>"$mkvmeta_codehist"</String>" >> /tmp/vrecord_mkvmeta.xml
+echo "</Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo "<Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<Name>Video Stream md5</Name>" >> /tmp/vrecord_mkvmeta.xml
+echo    "<String>"${md5}"</String>" >> /tmp/vrecord_mkvmeta.xml
+echo "</Simple>" >> /tmp/vrecord_mkvmeta.xml
+echo "</Tag>" >> /tmp/vrecord_mkvmeta.xml
+echo "</Tags>" >> /tmp/vrecord_mkvmeta.xml
+}
+
 #get the correct values for NTSC and PAL video depending on the capture card
 get_standard_values
 
@@ -1026,6 +1049,12 @@ report -d "Summary: ${video_bitdepth} bit ${codecname} ${container_choice} file 
 report -q "Hit enter to start recording"
 read
 
+if [[ ${container_choice} = "Matroska" ]] ; then
+    if [[ ${mkvmeta_choice} = "Yes" ]] ; then
+        mkvmeta="yes"
+    fi
+fi
+
 #create log of vrecord decisions
 INGESTLOG="${logdir}/${id}_capture_options.log"
 
@@ -1102,6 +1131,13 @@ if [[ "${qctoolsxml_choice}" = "No" ]] ; then
 fi
 
 _writeingestlog "datetime_end" "$(_get_iso8601)"
+
+#embed mkv metadata
+if [[ ${mkvmeta_choice} = "Yes" ]] ; then
+    create_mkvxml
+    mkvpropedit --tags all:/tmp/vrecord_mkvmeta.xml  "${dir}/${id}${suffix}.${extension}"
+fi
+
 
 #check audio levels
 if [[ "${qctoolsxml_choice}" = "Yes" ]] ; then

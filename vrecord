@@ -1066,7 +1066,7 @@ else
     done
 fi
 
-report -d "Summary: ${video_bitdepth} bit ${codecname} ${container_choice} file from ${standard_choice} ${video_input_choice} ${audio_input_choice} Frame MD5s=${framemd5_choice} QC Tools XML=${qctoolsxml_choice} and Technician=${technician}. Inputs recorded to ${dir}/${id}.${extension} Auxiliary Files created in ${logdir}"
+report -d "Summary: ${video_bitdepth} bit ${codecname} ${container_choice} file from ${standard_choice} ${video_input_choice} ${audio_input_choice} Frame MD5s=${framemd5_choice} QC Tools XML=${qctoolsxml_choice} Matroska metadata embedding=${mkvmeta_choice} and Technician=${technician}. Inputs recorded to ${dir}/${id}.${extension} Auxiliary Files created in ${logdir}"
 report -q "Hit enter to start recording"
 read
 
@@ -1089,6 +1089,12 @@ _writeingestlog "audio_input" "${audio_input_choice}"
 _writeingestlog "framemd5_choice" "${framemd5_choice}"
 _writeingestlog "qctoolsxml_choice" "${qctoolsxml_choice}"
 _writeingestlog "file_path" "${dir}/${id}.${extension}"
+_writeingestlog "mkvmeta_choice" "${mkvmeta_choice}"
+
+if [[ ${mkvmeta_choice} = "Yes" ]] ; then
+_writeingestlog "Originator" "${mkvmeta_originator}"
+_writeingestlog "Coding_History" "${mkvmeta_codehist}"
+fi
 
 if [[ ${technician} = "" ]] ; then
 _writeingestlog "technician" "N/A"

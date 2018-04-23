@@ -391,7 +391,7 @@ _passthrough_mode(){
     else
         "${FFPLAY_DECKLINK}" -v info -nostats "${GRAB_DECKLINK[@]}" 2> /tmp/vrecord_input.log \
         -window_title "${WINDOW_NAME}" \
-        -vf "${PLAYBACKFILTER}"
+        -vf "${PLAYBACKFILTER}" -af "channelmap=0|1:stereo"
     fi
     _gui_return
 }
@@ -1318,13 +1318,13 @@ else
             tee >("${FFPLAY_DECKLINK[@]}" \
                 -v info -hide_banner -stats -autoexit -i - \
                 -window_title "${WINDOW_NAME}" \
-                -vf "${PLAYBACKFILTER}") | \
+                -vf "${PLAYBACKFILTER}" -af "channelmap=0|1:stereo") | \
                 qcli -i - -o "${LOGDIR}/${ID}${SUFFIX}.${EXTENSION}.qctools.xml.gz"
         else
             "${FFPLAY_DECKLINK[@]}" \
                 -v info -hide_banner -stats -autoexit -i - \
                 -window_title "${WINDOW_NAME}" \
-                -vf "${PLAYBACKFILTER}"
+                -vf "${PLAYBACKFILTER}" -af "channelmap=0|1:stereo"
         fi
 fi
 

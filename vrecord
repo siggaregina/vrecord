@@ -631,29 +631,19 @@ _lookup_choice(){
 
         # audio mappings
         "2 Stereo Tracks (Channels 1 & 2 -> 1st Track Stereo, Channels 3 & 4 -> 2nd Track Stereo)")
-            AUDIOMAP="[0:a:0]pan=stereo| c0=c0 | c1=${PHASE_VALUE}c1[stereo1];[0:a:0]pan=stereo| c0=c2 | c1=c3[stereo2]"
-            AUDIO_CHANNEL_MAP+=(-map "[stereo1]")
-            AUDIO_CHANNEL_MAP+=(-map "[stereo2]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "asplit=2[a1][a2];[a1]pan=stereo|c0=c0|c1=${PHASE_VALUE}c1;[a2]pan=stereo|c0=c2|c1=c3" ) ;;
         "1 Stereo Track (From Channels 1 & 2)")
-            AUDIOMAP="[0:a:0]pan=stereo| c0=c0 | c1=${PHASE_VALUE}c1[stereo1]"
-            AUDIO_CHANNEL_MAP+=(-map "[stereo1]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "pan=stereo|c0=c0|c1=${PHASE_VALUE}c1" ) ;;
         "1 Stereo Track (From Channels 3 & 4)")
-            AUDIOMAP="[0:a:0]pan=stereo| c0=c2 | c1=${PHASE_VALUE}c3[stereo1]"
-            AUDIO_CHANNEL_MAP+=(-map "[stereo1]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "pan=stereo|c0=c2|c1=${PHASE_VALUE}c3" ) ;;
         "Channel 1 -> 1st Track Mono, Channel 2 -> 2nd Track Mono")
-            AUDIOMAP="[0:a:0]pan=mono| c0=c0[mono1];[0:a:0]pan=mono| c0=${PHASE_VALUE}c1[mono2]"
-            AUDIO_CHANNEL_MAP+=(-map "[mono1]")
-            AUDIO_CHANNEL_MAP+=(-map "[mono2]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "asplit=2[a1][a2];[a1]pan=mono|c0=c0;[a2]pan=mono|c0=${PHASE_VALUE}c1" ) ;;
         "Channel 2 -> 1st Track Mono, Channel 1 -> 2nd Track Mono")
-            AUDIOMAP="[0:a:0]pan=mono| c0=${PHASE_VALUE}c1[mono1];[0:a:0]pan=mono| c0=c0[mono2]"
-            AUDIO_CHANNEL_MAP+=(-map "[mono1]")
-            AUDIO_CHANNEL_MAP+=(-map "[mono2]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "asplit=2[a1][a2];[a1]pan=mono|c0=${PHASE_VALUE}c1;[a2]pan=mono|c0=c0" ) ;;
         "Channel 1 -> Single Track Mono")
-            AUDIOMAP="[0:a:0]pan=mono| c0=c0[mono1]"
-            AUDIO_CHANNEL_MAP+=(-map "[mono1]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "pan=mono|c0=c0" ) ;;
         "Channel 2 -> Single Track Mono")
-            AUDIOMAP="[0:a:0]pan=mono| c0=c1[mono1]"
-            AUDIO_CHANNEL_MAP+=(-map "[mono1]") ;;
+            MIDDLEOPTIONS+=(-filter_complex "pan=mono|c0=c1" ) ;;
 
         # video standard
         "NTSC")
@@ -1222,7 +1212,6 @@ if [[ "${MEDIA_PLAYER_CHOICE}" = "mpv" ]] ; then
         2> >(tee "${LOGDIR}/${ID}${CAPTURELOGSUFFIX}" /tmp/vrecord_input.log >/dev/null) \
         -nostdin -nostats "${INPUTOPTIONS[@]}" "${GRAB_DECKLINK[@]}" \
         -metadata:s:v:0 encoder="${CODECNAME}" "${MIDDLEOPTIONS[@]}" -c:a pcm_s24le \
-        -filter_complex "${AUDIOMAP}" "${AUDIO_CHANNEL_MAP[@]}" \
         -f "${FORMAT}" "${VRECORD_OUTPUT}" \
         "${EXTRAOUTPUTS[@]}" "${PIPE_DECKLINK[@]}" | \
         if [[ "${QCTOOLSXML_CHOICE}" = "Yes, concurrent with recording" ]] ; then
@@ -1236,7 +1225,6 @@ else
         2> >(tee "${LOGDIR}/${ID}${CAPTURELOGSUFFIX}" /tmp/vrecord_input.log >/dev/null) \
         -nostdin -nostats "${INPUTOPTIONS[@]}" "${GRAB_DECKLINK[@]}" \
         -metadata:s:v:0 encoder="${CODECNAME}" "${MIDDLEOPTIONS[@]}" -c:a pcm_s24le \
-        -filter_complex "${AUDIOMAP}" "${AUDIO_CHANNEL_MAP[@]}" \
         -f "${FORMAT}" "${VRECORD_OUTPUT}" \
         "${EXTRAOUTPUTS[@]}" "${PIPE_DECKLINK[@]}" | \
         if [[ "${QCTOOLSXML_CHOICE}" = "Yes, concurrent with recording" ]] ; then
